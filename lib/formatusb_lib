@@ -31,7 +31,9 @@ unmount_partitions()
 clear_partitions()
 {
     local dev=/dev/$device
-    local bytes=$(parted --script $dev unit B print 2>/dev/null | sed -rn "s/^Disk.*: ([0-9]+)B$/\1/ip")
+    local bytes=$(lsblk --bytes --nodeps --noheadings --output SIZE $dev)
+    # same as the more bulky $(parted --script $dev unit B print 2>/dev/null | sed -rn "s/^Disk.*: ([0-9]+)B$/\1/ip")
+    # but uses the more reliable lsblk ( a coreutil ) and is more readable
     local block_size=512
     local pt_size=$((17 * 1024))
     local pt_cnt=$((pt_size / block_size))
